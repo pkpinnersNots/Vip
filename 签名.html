@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<style type="text/css">
+		.box{
+			width: 500px;
+			height: 500px;
+			margin: 50px auto 0;
+			border: 2px solid #e339c4;
+		}
+
+		.cvs{
+			display: block;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="box">
+		<canvas id="canvas" class="cvs" width="500" height="500"></canvas>
+	</div>
+
+	<button id="clear">清除</button>
+	<button id="restore">恢复</button>
+	<button id="save">保存图片</button>
+
+	<script type="text/javascript">
+		
+		window.onload = function () {
+
+			//获取元素方法
+			function getElement(id) {
+				return document.getElementById(id);
+			}
+
+			//获取canvas元素
+			var canvas = getElement('canvas');
+
+			//获取画布上下文
+			var context = canvas.getContext('2d');
+
+			canvas.onmousedown = function (e) {
+
+				//设置绘制条线的颜色
+				context.strokeStyle = '#e4393c';
+
+				//设置线条大小
+				context.lineWidth = 5;
+
+				//获取相对于canvas元素的鼠标坐标
+				var x = e.offsetX;
+				var y = e.offsetY;
+
+				//设置绘制线条开始位置
+				context.moveTo(x, y);
+
+				this.onmousemove = function (e) {
+
+					var x1 = e.offsetX;
+					var y1 = e.offsetY;
+
+					context.lineTo(x1, y1);
+
+					//描边
+					context.stroke();
+
+				}
+
+			}
+
+			//鼠标松开时, 清除canvas.onmousemove
+			canvas.onmouseup = function () {
+				this.onmousemove = null;
+			}
+
+			//鼠标离开canvas画布时, 清除canvas.onmousemove
+			canvas.onmouseleave = function () {
+				this.onmousemove = null;
+			}
+
+			//清除
+			var clear = getElement('clear');
+
+			clear.onclick = function () {
+
+				//清除canvas
+				canvas.width = canvas.width;
+
+				//清除canvas
+				// context.clearRect(0, 0, canvas.width, canvas.height);
+
+			}
+
+			//保存图片
+			var save = getElement('save');
+			save.onclick = function () {
+
+				//toDataURL(图片类型): 将canvas转换为base64的图片
+				var base64 = canvas.toDataURL('image/png');
+				console.log('base64 ==> ', base64);
+
+				//预览图
+				// var img = new Image();
+
+				// img.src = base64;
+
+				// document.body.append(img);
+
+				//通过a进行下载
+				var a = document.createElement('a');
+
+				a.href = base64;
+
+				//设置下载属性
+				a.download = 'canvas' + new Date().getTime();
+
+				//模拟点击a
+				a.click();
+
+			}
+
+		}
+
+	</script>
+</body>
+</html>
